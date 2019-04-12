@@ -4,14 +4,14 @@
 
 #### Članovi tima:
 
-1.Alomerović Karim
-2.Ćeman Mirza
-3.Fejzić Amila
-4.Horozić Asja
-5.Kadić Amer
-6.Musić Enisa
-7.Sijah Amir
-8.Smajlović Faruk
+1.Alomerović Karim  
+2.Ćeman Mirza  
+3.Fejzić Amila  
+4.Horozić Asja  
+5.Kadić Amer  
+6.Musić Enisa  
+7.Sijah Amir  
+8.Smajlović Faruk  
 
 ## Opis modula
 
