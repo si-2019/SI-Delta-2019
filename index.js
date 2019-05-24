@@ -12,7 +12,7 @@ app.use(
   })
 );
 const Sequelize = require('sequelize');
-const db = require('./db.js')
+const db = require('./server/db.js')
 db.sequelize.sync();
 
 
