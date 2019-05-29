@@ -1,0 +1,27 @@
+{
+  "name": "si",
+  "version": "1.0.0",
+  "description": "## Modul: Predmet",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/si-2019/SI-Delta-2019.git"
+  },
+  "author": "Amer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/si-2019/SI-Delta-2019/issues"
+  },
+  "homepage": "https://github.com/si-2019/SI-Delta-2019#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.0",
+    "mysql": "^2.17.1",
+    "npm": "^6.9.0",
+    "sequelize-auto": "^0.4.29"
+  }
+}
