@@ -23,6 +23,30 @@ app.use("/*", (req, res, next) => {
   next();
 });
 
+//# region get zahtjev za dobavljanje ocjene
+app.get('/ocjena/:idPredmeta/:idStudenta', async(req,res)=>{
+  try{
+    const imaLiOcjene= await  db.PredmetStudent.find({ where:{idStudent: req.params.idStudenta, idPredmet: req.params.idPredmeta}, attributes: ['ocjena']});
+    if(imaLiOcjene==null){
+      res.send("Student nije upisan na predmet")
+    }
+
+    else if(imaLiOcjene.ocjena==null){
+      res.send("Nema konačne ocjene");
+
+    }
+    else{
+      res.send(JSON.stringify(imaLiOcjene.ocjena));
+    }
+  } catch( error){
+    res.status(400).send({error:error.message});
+    
+  }    
+});
+
+//#endregion
+
+
 
 app.get("/SI", async (req, res) => {
   try {

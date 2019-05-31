@@ -10,6 +10,7 @@ db.Ispit = sequelize.import("../models/Ispit.js");
 db.Predmet = sequelize.import("../models/Predmet.js");
 db.Student = sequelize.import("../models/Korisnik.js");
 db.Korisnik = sequelize.import("../models/Korisnik1.js");
+db.PredmetStudent=sequelize.import("../models/predmet_student.js");
 
 db.IspitiRezultati = sequelize.import("../models/ispiti_rezultati.js")
 db.Student.belongsToMany(db.Ispit, {through: 'IspitiRezultati'});
