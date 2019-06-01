@@ -66,6 +66,34 @@ app.get('/ispitObavjestenje/:idPredmeta', async(req,res)=>{
 });
 //#endregion
 
+
+app.get("/SI", async (req, res) => {
+  try {
+    const predmetSI = await db.Predmet.find({
+      where: {
+        naziv: "Softver inzenjering"
+     }
+    });
+    res.send(JSON.stringify(predmetSI));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/dohvatiProfesora/:profesorID", async (req, res) => {
+  const { profesorID } = req.params;
+  try {
+    const profesor = await db.Korisnik.find({
+      where: {
+        id: profesorID
+     }
+    });
+    res.send(JSON.stringify(profesor));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
 //Server
 app.listen(port, () => console.log(`Server pokrenut na portu ${port}`));
 //
