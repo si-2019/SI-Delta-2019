@@ -46,6 +46,26 @@ app.get('/ocjena/:idPredmeta/:idStudenta', async(req,res)=>{
 
 //#endregion
 
+//#region get zahtjev za provjeru postoji li ispit za predmet
+app.get('/ispitObavjestenje/:idPredmeta', async(req,res)=>{
+  try{
+    const ispiti=await db.Ispit.findAll({where:{idPredmet:req.params.idPredmeta}, attributes:['rokPrijave']});
+    for(let i=0; i<ispiti.length; i++){
+      var datum=new Date();
+      if(ispiti[i].rokPrijave!=null && ispiti[i].rokPrijave.getTime()>datum.getTime()){
+        res.send("Prijavite ispit");
+      }
+    }  
+    
+    res.send("Nema prijava");
+      
+    
+  }catch( error){
+    res.status(400).send({error:error.message});
+  }  
+});
+//#endregion
+
 //Server
 app.listen(port, () => console.log(`Server pokrenut na portu ${port}`));
 //
