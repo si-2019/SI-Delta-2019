@@ -44,6 +44,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     }
   }, {
-    tableName: 'Predmet'
+    tableName: 'Predmet',
+    timestamps:false
+
   });
 };
