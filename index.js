@@ -67,6 +67,28 @@ app.get('/ispitObavjestenje/:idPredmeta', async(req,res)=>{
 //#endregion
 
 
+
+
+app.get("/dohvatiPredmet/:idPredmeta", async (req, res) => {
+  try {
+    const predmet = await db.Predmet.find({
+      where:{id:req.params.idPredmeta} ,attributes:['naziv','ects','idProfesor','opis']});
+    res.send(JSON.stringify(predmet));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/dohvatiProfesora/:idProfesora", async (req, res) => {
+  try {
+    const profesor = await db.Korisnik.find({
+      where:{id:req.params.idProfesora} ,attributes:['ime','prezime']});
+    res.send(JSON.stringify(profesor));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
 app.get("/SI", async (req, res) => {
   try {
     const predmetSI = await db.Predmet.find({
@@ -80,7 +102,7 @@ app.get("/SI", async (req, res) => {
   }
 });
 
-app.get("/dohvatiProfesora/:profesorID", async (req, res) => {
+app.get("/dohvatiProfesora1/:profesorID", async (req, res) => {
   const { profesorID } = req.params;
   try {
     const profesor = await db.Korisnik.find({
