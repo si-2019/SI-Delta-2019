@@ -11,9 +11,17 @@ app.use(
     extended: true
   })
 );
+
+//Swagger
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
+app.use('/apis', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 const Sequelize = require('sequelize');
 const db = require('./server/db.js')
 db.sequelize.sync();
+
 
 
 app.use("/*", (req, res, next) => {

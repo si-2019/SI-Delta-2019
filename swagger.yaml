@@ -1,0 +1,197 @@
+openapi: 3.0.0
+info:
+  title: APIs i mikroservisi modula predmeti
+  description: U ovom dokumentu su opisani APIji i mikroservisi koje nudi modul predmeti
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: listaPredmeta - Mikroservisi
+  description: Svi mikroservisi za liste predmeta
+- name: bodoviIspiti - Mikroservisi
+  description: Svi mikroservisi vezani za bodove ostvarene na ispitima
+- name: ocjena - Mikroservisi
+  description: Svi mikroservisi vezani za ocjene
+- name: završniRad - Mikroservisi
+  description: Svi mikroservisi vezani za teme završnih radova
+- name: infoPredmeta - Mikroservisi
+  description: Podaci potrebni za prikaz na info o predmetu
+- name: prisustvo - Mikroservisi
+  description: Svi mikroservisi vezani za prisustvo
+paths:
+  /delta/ocjena/{}:idPredmeta}/{:idStudenta}:
+    get:
+      tags:
+      - ocjena - Mikroservisi
+      summary: Dobavlja konačnu ocjenu studenta
+      description: |
+        Ovaj endpoint dobavlja konačnu ocjenu na predmetu za studenta id-em idPredmeta i idStudenta.
+      operationId: korisnik
+      parameters:
+      - name: idStudenta
+        in: path
+        description: obavezan parametar id koji označava studenta
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 0
+          type: integer
+          format: int64
+      - name: idPredmeta
+        in: path
+        description: obavezan parametar id koji označava predmet
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: uspješna pretraga studenta i predmeta
+        400:
+          description: pogrešan id
+        404:
+          description: nije pronađen korisnik
+  /delta/prisustvo:
+    get:
+      tags:
+      - prisustvo - Mikroservisi
+      summary: Dobavlja ostvareno prisustvo studenta na željenom predmetu
+      description: Ovaj endpoint dobavlja ostvareni prisustvo
+        na predmetu sa id-em idPredmeta.
+      operationId: getPrisustvo
+      parameters:
+      - name: idStudenta
+        in: query
+        description: id studenta za kojeg trazimo prisustvo
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: idPredmeta
+        in: query
+        description: id predmeta za kojeg trazimo prisustvo
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied               
+  /delta/dohvatiPredmet/{:idPredmeta}:
+    get:
+      tags:
+      - infoPredmeta - Mikroservisi
+      summary: Dobavlja naziv, opis i etcs bodove na željenom predmetu
+      description: Ovaj endpoint naziv, opis i etcs bodove
+        na predmetu sa id-em idPredmeta.
+      operationId: getPredmet
+      parameters:
+      - name: idPredmeta
+        in: query
+        description: id predmeta za kojeg trazimo info
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied        
+  /delta/dohvatiProfesora/{idProfesora}:
+    get:
+      tags:
+      - infoPredmet - Mikroservisi
+      summary: Dobavlja ime i prezime profesora na željenom predmetu
+      description: Ovaj endpoint dobavlja ime i prezime profesora 
+        na predmetu za id idProfesora.
+      operationId: getProfesora
+      parameters:
+      - name: idProfesora
+        in: query
+        description: id profesora za kojeg trazimo ime i prezime
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied
+  /delta/listaSvihPredmeta/{:idStudent}:
+    get:
+      tags:
+      - listaPredmeta - Mikroservisi
+      summary: Dobavlja sve predmete koje studnet sluša
+      description: Ovaj endpoint dobavlja sve predmete koje student sluša.
+      operationId: getlistaSvihPredmeta
+      parameters:
+      - name: idStudenta
+        in: query
+        description: id studenta za kojeg trazimo predmete
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: idPredmeta
+        in: query
+        description: id predmeta za kojeg trazimo prisustvo
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied
+  /fox/listaTrenutnihPredmeta/{:idStudenta}/{:akademskaGodina}:
+    get:
+      tags:
+      - listaPredmeta - Mikroservisi
+      summary: Dobavlja predmete koje student trenutno sluša
+      description: Ovaj endpoint dobavlja predmete koje student trenutno sluša za idStudenta.
+      operationId: listaTrenutnihPredmeta
+      parameters:
+      - name: idStudenta
+        in: query
+        description: id studenta za kojeg predmete
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: akadmeskaGodina
+        in: query
+        description: trenutna akademska godina
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied
