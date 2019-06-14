@@ -164,34 +164,3 @@ paths:
           description: successful operation
         400:
           description: Invalid ID supplied
-  /fox/listaTrenutnihPredmeta/{:idStudenta}/{:akademskaGodina}:
-    get:
-      tags:
-      - listaPredmeta - Mikroservisi
-      summary: Dobavlja predmete koje student trenutno sluša
-      description: Ovaj endpoint dobavlja predmete koje student trenutno sluša za idStudenta.
-      operationId: listaTrenutnihPredmeta
-      parameters:
-      - name: idStudenta
-        in: query
-        description: id studenta za kojeg predmete
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-          format: int64
-      - name: akadmeskaGodina
-        in: query
-        description: trenutna akademska godina
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        200:
-          description: successful operation
-        400:
-          description: Invalid ID supplied
