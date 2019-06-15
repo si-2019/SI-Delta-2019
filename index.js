@@ -263,6 +263,36 @@ app.get("/dohvatiPredmeteKojeTrenutnoSlusa/:idStudenta", async (req, res) => {
   }
 });
 
+app.get("/prisustvoPredavanja/:idPredmeta/:idStudenta", async (req, res) => {
+  try {
+    const prisustvo = await db.PrisustvoPredavanja.findAll({
+      where: {
+        idPredmeta: req.params.idPredmeta,
+        idStudenta: req.params.idStudenta
+      },
+      attributes: ["prisutan", "brojSedmice"]
+    });
+    res.send(JSON.stringify(prisustvo));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/prisustvoTutorijala/:idPredmeta/:idStudenta", async (req, res) => {
+  try {
+    const prisustvo = await db.PrisustvoTutorijali.findAll({
+      where: {
+        idPredmeta: req.params.idPredmeta,
+        idStudenta: req.params.idStudenta
+      },
+      attributes: ["prisutan", "brojSedmice"]
+    });
+    res.send(JSON.stringify(prisustvo));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
 app.get("/dohvatiProfesora1/:profesorID", async (req, res) => {
   const { profesorID } = req.params;
   try {
