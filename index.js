@@ -277,6 +277,20 @@ app.get("/dohvatiProfesora1/:profesorID", async (req, res) => {
   }
 });
 
+
+app.get("/dohvatiIDPredmeta/:predmetNaziv", async (req, res) => {
+  try {
+    const predmet = await db.Predmet.find({
+      where: {
+        naziv: req.params.predmetNaziv
+      }
+    });
+    res.send(JSON.stringify(predmet.id));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
 //Server
 app.listen(port, () => console.log(`Server pokrenut na portu ${port}`));
 //

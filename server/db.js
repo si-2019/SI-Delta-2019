@@ -1,5 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize("TYQcLL35gV","TYQcLL35gV","BLysSj9ZrP",{ host:"37.59.55.185", dialect:"mysql"});
+//const sequelize = new Sequelize("hXb0pLcW9N","hXb0pLcW9N","3VeAJRjpCp",{ host:"37.59.55.185", dialect:"mysql"});
+
 const db={};
 //3VeAJRjpCp
 db.Sequelize = Sequelize;  
