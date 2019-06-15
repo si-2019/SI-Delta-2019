@@ -97,6 +97,8 @@ app.get("/zadacaObavjestenje/:idPredmeta", async (req, res) => {
   }
 });
 
+
+
 app.get("/dohvatiEmailProfesora/:idProfesora", async (req, res) => {
   try {
     const email = await db.Korisnik.find({
@@ -153,6 +155,62 @@ app.get("/dohvatiProfesora/:idProfesora", async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 });
+
+app.get("/jeliProfesor/:idPredmeta/:idProfesora", async (req, res) => {
+  try {
+      var prof = req.params.idProfesora;
+    const profesor = await db.Predmet.find({
+      where: { id: req.params.idPredmeta },
+      attributes: ["idProfesor"]
+    });
+    if(profesor == null){res.send("Ne postoji predmet");}
+    if(profesor.idProfesor == prof){
+    res.send(true);
+  }
+  else{ res.send(false);}
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/jeliAsistent/:idPredmeta/:idAsistenta", async (req, res) => {
+  try {
+      var asis = req.params.idAsistenta;
+    const asistent = await db.Predmet.find({
+      where: { id: req.params.idPredmeta },
+      attributes: ["idAsistent"]
+    });
+    if(asistent == null){res.send("Ne postoji predmet");}
+    if(asistent.idAsistent == asis){
+    res.send(true);
+  }
+  else{ res.send(false);}
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/jeliStudent/:idPredmeta/:idStudenta", async (req, res) => {
+  try {
+      var stud = req.params.idStudenta;
+    const student = await db.PredmetStudent.findAll({
+      where: { idPredmet: req.params.idPredmeta },
+      attributes: ["idStudent"]
+    });
+    if(student == null){res.send("Ne postoji predmet");}
+    for (let i = 0; i < student.length; i++) {
+    if(student[i].idStudent == stud){
+    res.send(true);
+}}
+  
+  res.send(false);
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+
+
 
 app.get("/SI", async (req, res) => {
   try {
