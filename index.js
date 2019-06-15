@@ -3,8 +3,6 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 31904;
 
-
-
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -13,16 +11,14 @@ app.use(
 );
 
 //Swagger
-const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./swagger.yaml');
-app.use('/apis', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./swagger.yaml");
+app.use("/apis", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-const Sequelize = require('sequelize');
-const db = require('./server/db.js')
+const Sequelize = require("sequelize");
+const db = require("./server/db.js");
 db.sequelize.sync();
-
-
 
 app.use("/*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
@@ -32,56 +28,115 @@ app.use("/*", (req, res, next) => {
 });
 
 //# region get zahtjev za dobavljanje ocjene
-app.get('/ocjena/:idPredmeta/:idStudenta', async(req,res)=>{
-    try{
-      const imaLiOcjene= await  db.PredmetStudent.find({ where:{idStudent: req.params.idStudenta, idPredmet: req.params.idPredmeta}, attributes: ['ocjena']});
-      if(imaLiOcjene==null){
-        res.send("Student nije upisan na predmet")
-      }
-
-      else if(imaLiOcjene.ocjena==null){
-        res.send("Nema konačne ocjene");
-
-      }
-      else{
-        res.send(JSON.stringify(imaLiOcjene.ocjena));
-      }
-    } catch( error){
-      res.status(400).send({error:error.message});
-      
-    }    
+app.get("/ocjena/:idPredmeta/:idStudenta", async (req, res) => {
+  try {
+    const imaLiOcjene = await db.PredmetStudent.find({
+      where: {
+        idStudent: req.params.idStudenta,
+        idPredmet: req.params.idPredmeta
+      },
+      attributes: ["ocjena"]
+    });
+    if (imaLiOcjene == null) {
+      res.send("Student nije upisan na predmet");
+    } else if (imaLiOcjene.ocjena == null) {
+      res.send("Nema konačne ocjene");
+    } else {
+      res.send(JSON.stringify(imaLiOcjene.ocjena));
+    }
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
 });
 
 //#endregion
 
 //#region get zahtjev za provjeru postoji li ispit za predmet
-app.get('/ispitObavjestenje/:idPredmeta', async(req,res)=>{
-  try{
-    const ispiti=await db.Ispit.findAll({where:{idPredmet:req.params.idPredmeta}, attributes:['rokPrijave']});
-    for(let i=0; i<ispiti.length; i++){
-      var datum=new Date();
-      if(ispiti[i].rokPrijave!=null && ispiti[i].rokPrijave.getTime()>datum.getTime()){
+app.get("/ispitObavjestenje/:idPredmeta", async (req, res) => {
+  try {
+    const ispiti = await db.Ispit.findAll({
+      where: { idPredmet: req.params.idPredmeta },
+      attributes: ["rokPrijave"]
+    });
+    for (let i = 0; i < ispiti.length; i++) {
+      var datum = new Date();
+      if (
+        ispiti[i].rokPrijave != null &&
+        ispiti[i].rokPrijave.getTime() > datum.getTime()
+      ) {
         res.send("Prijavite ispit");
       }
-    }  
-    
+    }
+
     res.send("Nema prijava");
-      
-    
-  }catch( error){
-    res.status(400).send({error:error.message});
-  }  
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
 });
 //#endregion
 
+app.get("/zadacaObavjestenje/:idPredmeta", async (req, res) => {
+  try {
+    const zadace = await db.Zadaca.findAll({
+      where: { idPredmet: req.params.idPredmeta },
+      attributes: ["rokZaPredaju"]
+    });
+    for (let i = 0; i < zadace.length; i++) {
+      var datum = new Date();
+      if (
+        zadace[i].rokZaPredaju != null &&
+        zadace[i].rokZaPredaju.getTime() > datum.getTime()
+      ) {
+        res.send("Pošaljite zadaću");
+      }
+    }
 
+    res.send("Nema zadaća");
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
 
+app.get("/dohvatiEmailProfesora/:idProfesora", async (req, res) => {
+  try {
+    const email = await db.Korisnik.find({
+      where: { id: req.params.idProfesora },
+      attributes: ["email"]
+    });
+    res.send(JSON.stringify(email));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
 
 app.get("/dohvatiPredmet/:idPredmeta", async (req, res) => {
   try {
     const predmet = await db.Predmet.find({
-      where:{id:req.params.idPredmeta} ,attributes:['naziv','ects','idProfesor','opis']});
+      where: { id: req.params.idPredmeta },
+      attributes: ["naziv", "ects", "idProfesor", "opis"]
+    });
     res.send(JSON.stringify(predmet));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/rezultatiIspita/:idPredmeta/:idStudenta", async (req, res) => {
+  try {
+    const idIspita = await db.Ispit.find({
+      where: {
+        idPredmet: req.params.idPredmeta
+      },
+      attributes: ["idIspit"]
+    });
+    const bod = await db.IspitBodovi.find({
+      where: {
+        idKorisnika: req.params.idStudenta,
+        idIspita: idIspita.idIspit
+      },
+      attributes: ["bodovi"]
+    });
+    res.send(JSON.stringify(bod));
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
@@ -90,7 +145,9 @@ app.get("/dohvatiPredmet/:idPredmeta", async (req, res) => {
 app.get("/dohvatiProfesora/:idProfesora", async (req, res) => {
   try {
     const profesor = await db.Korisnik.find({
-      where:{id:req.params.idProfesora} ,attributes:['ime','prezime']});
+      where: { id: req.params.idProfesora },
+      attributes: ["ime", "prezime"]
+    });
     res.send(JSON.stringify(profesor));
   } catch (error) {
     res.status(400).send({ error: error.message });
@@ -102,9 +159,47 @@ app.get("/SI", async (req, res) => {
     const predmetSI = await db.Predmet.find({
       where: {
         naziv: "Softver inzenjering"
-     }
+      }
     });
     res.send(JSON.stringify(predmetSI));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/dohvatiSvePredmeteStudenta/:idStudenta", async (req, res) => {
+  try {
+    const predmeti = await db.PredmetStudent.findAll({
+      where: { idStudent: req.params.idStudenta },
+      attributes: ["idPredmet"]
+    });
+    var predmet = new Array();
+    for (let i = 0; i < predmeti.length; i++) {
+      predmet[i] = await db.Predmet.find({
+        where: { id: predmeti[i].idPredmet },
+        attributes: ["naziv"]
+      });
+    }
+    res.send(JSON.stringify(predmet));
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/dohvatiPredmeteKojeTrenutnoSlusa/:idStudenta", async (req, res) => {
+  try {
+    const predmeti = await db.PredmetStudent.findAll({
+      where: { idStudent: req.params.idStudenta, idAkademskaGodina: 13 },
+      attributes: ["idPredmet"]
+    });
+    var predmet = new Array();
+    for (let i = 0; i < predmeti.length; i++) {
+      predmet[i] = await db.Predmet.find({
+        where: { id: predmeti[i].idPredmet },
+        attributes: ["naziv"]
+      });
+    }
+    res.send(JSON.stringify(predmet));
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
@@ -116,7 +211,7 @@ app.get("/dohvatiProfesora1/:profesorID", async (req, res) => {
     const profesor = await db.Korisnik.find({
       where: {
         id: profesorID
-     }
+      }
     });
     res.send(JSON.stringify(profesor));
   } catch (error) {
