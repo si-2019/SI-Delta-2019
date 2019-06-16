@@ -21,7 +21,7 @@ const db = require("./server/db.js");
 db.sequelize.sync();
 
 app.use("/*", (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", "https://si2019fronend.herokuapp.com");
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   next();
@@ -101,8 +101,12 @@ app.get("/zadacaObavjestenje/:idPredmeta", async (req, res) => {
 
 app.get("/dohvatiEmailProfesora/:idProfesora", async (req, res) => {
   try {
-    const email = await db.Korisnik.find({
-      where: { id: req.params.idProfesora },
+    const predmet = await db.Predmet.find({
+      where: { id: req.params.idPredmeta },
+      attributes: ["idProfesor"]
+    });
+    const profesor = await db.Korisnik.find({
+      where: { id: predmet.idProfesor },
       attributes: ["email"]
     });
     res.send(JSON.stringify(email));
@@ -144,11 +148,15 @@ app.get("/rezultatiIspita/:idPredmeta/:idStudenta", async (req, res) => {
   }
 });
 
-app.get("/dohvatiProfesora/:idProfesora", async (req, res) => {
+app.get("/dohvatiProfesora/:idPredmeta", async (req, res) => {
   try {
+    const predmet = await db.Predmet.find({
+      where: { id: req.params.idPredmeta },
+      attributes: ["idProfesor"]
+    });
     const profesor = await db.Korisnik.find({
-      where: { id: req.params.idProfesora },
-      attributes: ["ime", "prezime"]
+      where: { id: predmet.idProfesor },
+      attributes: ["ime", "prezime", "email"]
     });
     res.send(JSON.stringify(profesor));
   } catch (error) {
