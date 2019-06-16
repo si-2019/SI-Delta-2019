@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+const test = require('./testToken.js')
 const port = process.env.PORT || 31904;
 
 app.use(bodyParser.json());
@@ -237,6 +238,7 @@ app.get("/SI", async (req, res) => {
 });
 
 app.get("/dohvatiSvePredmeteStudenta/:idStudenta", async (req, res) => {
+  test(req.query.username, req.header('Authorization'), req, res, async (req, res) => {
   try {
     const predmeti = await db.PredmetStudent.findAll({
       where: { idStudent: req.params.idStudenta },
@@ -253,6 +255,7 @@ app.get("/dohvatiSvePredmeteStudenta/:idStudenta", async (req, res) => {
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
+})
 });
 
 app.get("/dohvatiPredmeteKojeTrenutnoSlusa/:idStudenta", async (req, res) => {
@@ -320,6 +323,7 @@ app.get("/dohvatiProfesora1/:profesorID", async (req, res) => {
 
 
 app.get("/dohvatiIDPredmeta/:predmetNaziv", async (req, res) => {
+  test(req.query.username, req.header('Authorization'), req, res, async (req, res) => {
   try {
     const predmet = await db.Predmet.find({
       where: {
@@ -330,6 +334,8 @@ app.get("/dohvatiIDPredmeta/:predmetNaziv", async (req, res) => {
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
+})
+
 });
 
 //Server
