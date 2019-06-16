@@ -27,6 +27,9 @@ app.use("/*", (req, res, next) => {
   next();
 });
 
+var cors = require('cors')
+app.use(cors())
+
 //# region get zahtjev za dobavljanje ocjene
 app.get("/ocjena/:idPredmeta/:idStudenta", async (req, res) => {
   try {
